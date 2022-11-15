@@ -6,8 +6,14 @@ sources:
   schema: public
   tables:
   - name: actor
+    description: Each record represents a configured connector. e.g. A Postgres connector configured to pull data from my database.
   - name: actor_definition
+    description: Each record represents a connector that Airbyte supports, e.g. Postgres. This table represents all the connectors that is supported by the current running platform.
   - name: attempts
+    description: Each record in this table represents an attempt.
   - name: connection
+    description: Each record in this table configures a connection (source_id, destination_id, and relevant configuration).
   - name: jobs
+    description: Each record in this table represents a job.
   - name: workspace
+    description: Each record represents a logical workspace for an Airbyte user. In the open-source version of the product, only one workspace is allowed.
