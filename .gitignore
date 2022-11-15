@@ -1,0 +1,56 @@
+.gradle
+.idea
+.vscode
+*.iml
+*.swp
+.DS_Store
+.dockerversions
+.classpath
+.project
+.settings
+.vscode
+
+build
+
+# Secrets
+secrets
+
+# Python
+*.egg-info
+__pycache__
+.pyc
+.eggs
+.venv
+.mypy_cache
+.ipynb_checkpoints
+*.ipynb
+.pytest_
+
+# Python unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# airbyte
+airbyte/run/
+
+#dbt
+transformation_dbt/dbt_packages/
+transformation_dbt/logs/
+transformation_dbt/target/
+transformation_dbt/profiles.yml
+
+
+# open stack project
+visualization/metabase/plugins
+visualization/metabase/metabase.jar

@@ -28,7 +28,7 @@ build-backend = "poetry.core.masonry.api"
 test = { cmd = "dbt test", help= "run dbt tests for this project" }
 update = { cmd = "poetry update", help = "update Python dependencies with Poetry" }
 setup_dbt = { cmd = "dbt deps", help = "setup dbt deps" }
-setup_dbt_profile1 = { cmd = "[ -f old ] && mv ~/.dbt/profiles.yml ~/.dbt/profiles_backup.yml", help = "setup dbt profile" }
+setup_dbt_profile1 = { cmd = "mv -n ~/.dbt/profiles.yml ~/.dbt/profiles_backup.yml", help = "setup dbt profile" }
 setup_dbt_profile2 = { cmd = "cp dbt_profiles.yml ~/.dbt/profiles.yml", help = "setup dbt profile" }
 run = { cmd = "dbt run", help = "run dbt" }
 sql_format = { cmd = "sqlfuff fix", help = "sqlfluff fix and format" }
