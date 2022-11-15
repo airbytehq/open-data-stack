@@ -1,0 +1,13 @@
+# Source definitions for airbyte raw tables
+version: 2
+sources:
+- name: airbyte_local_db
+  database: airbyte
+  schema: public
+  tables:
+  - name: actor
+  - name: actor_definition
+  - name: attempts
+  - name: connection
+  - name: jobs
+  - name: workspace

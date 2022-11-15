@@ -1,0 +1,36 @@
+
+# This file is specific to dbt
+# see https://docs.getdbt.com/dbt-cli/configure-your-profile
+# This configuration file specifies information about connections to
+# your data warehouse(s). The file contains a series of "profiles."
+# Profiles specify database credentials and connection information
+#
+
+# Top-level configs that apply to all profiles are set here
+config:
+    partial_parse: true
+    printer_width: 120
+    send_anonymous_usage_stats: False
+    use_colors: True
+
+# see https://docs.getdbt.com/docs/supported-databases for more details
+#
+# Commonly, it's helpful to define multiple targets for a profile. For example,
+# these targets might be `dev` and `prod`. Whereas the `dev` target points to
+# a development schema (eg. dbt_dev), the `prod` schema should point to the
+# prod schema (eg. analytics). Analytical/BI tools should point to the
+# prod schema so that local development does not interfere with analysis.
+#
+airbyte_monitoring:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      threads: 1
+      host: localhost
+      port: 5435
+      user: docker
+      pass: docker
+      dbname: airbyte
+      schema: monitoring
+
