@@ -20,7 +20,7 @@ renamed as (
         resource_requirements,
 
         {{ json_extract_text_custom('schedule', 'timeUnit') }} as time_unit,
-        {{ json_extract_text_custom('schedule', 'units', 'integer') }} as units
+{{ json_extract_text_custom('schedule', 'units', 'integer') }} as units
 
     from source
 )

@@ -37,15 +37,21 @@ attempts_data as (select distinct
     updated_at,
     ended_at
     from attempts_raw_data
-), attempts_incl_row_num as ( select
+),
+
+attempts_incl_row_num as ( select
         sync_unique_key,
         job_id,
         attempt_id,
         failure_reasons,
         dt,
-        row_number() over (partition by sync_unique_key, job_id, attempt_id, temporal_workflow_id order by dt desc, updated_at desc, ended_at desc, loaded_at desc) as seq
+        row_number() over (
+            partition by sync_unique_key, job_id, attempt_id, temporal_workflow_id order by dt desc, updated_at desc, ended_at desc, loaded_at desc
+        ) as seq
     from attempts_raw_data
-), attempts_failure_reasons_data as (
+),
+
+attempts_failure_reasons_data as (
     select
         sync_unique_key,
         job_id,
@@ -54,7 +60,9 @@ attempts_data as (select distinct
         dt
     from attempts_incl_row_num
     where seq = 1
-), jobs_data as (
+),
+
+jobs_data as (
     select distinct
         --except(loaded_at, operation_sequence, cpu_request, memory_request)
         job_id,
