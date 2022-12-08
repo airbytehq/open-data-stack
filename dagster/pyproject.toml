@@ -1,0 +1,64 @@
+
+[tool.poetry]
+name = "orchestration-layer"
+version = "0.1.0"
+description = ""
+authors = ["Simon Späti <simon@airbyte.io>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+dagster = "^1.1.0"
+dagit = "^1.1.0"
+dagster-airbyte = "*"
+dagster-managed-elements = "*"
+dagster-dbt = "*"
+dagster-postgres = "*"
+pandas = "*"
+numpy = "*"
+dbt-core = "1.2.0"
+dbt-postgres = "*"
+beautifulsoup4 = "*"
+requests = "*"
+
+[tool.poetry.dev-dependencies]
+black = "^22.6.0"
+isort = "^5.10.1"
+mypy = "^0.971"
+pylint = "^2.14.5"
+pytest = "^7.1.2"
+taskipy = "^1.10.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.taskipy.tasks]
+# test = { cmd = "dbt test", help= "run dbt tests for this project" }
+update = { cmd = "poetry update", help = "update Python dependencies with Poetry" }
+# setup_dbt = { cmd = "dbt deps", help = "setup dbt deps" }
+run = { cmd = "dagit", help = "run dagit" }
+
+
+[tool.black]
+line-length = 150
+target-version = ['py37']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | target
+)/
+'''
+
+[tool.isort]
+profile = "black"
+force_single_line = "True"
+
