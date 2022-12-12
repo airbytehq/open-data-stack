@@ -21,26 +21,18 @@ N_USERS = 100
 N_ORDERS = 10000
 
 
-def _safe_request(
-    client: AirbyteResource, endpoint: str, data: Dict[str, object]
-) -> Mapping[str, Any]:
+def _safe_request(client: AirbyteResource, endpoint: str, data: Dict[str, object]) -> Mapping[str, Any]:
     response = client.make_request(endpoint, data)
     assert response, "Request returned null response"
     return response
 
 
 def _create_ab_source(client: AirbyteResource) -> str:
-    workspace_id = _safe_request(client, "/workspaces/list", data={})["workspaces"][0][
-        "workspaceId"
-    ]
+    workspace_id = _safe_request(client, "/workspaces/list", data={})["workspaces"][0]["workspaceId"]
 
     # get latest available Postgres source definition
-    source_defs = _safe_request(
-        client, "/source_definitions/list_latest", data={"workspaceId": workspace_id}
-    )
-    postgres_definitions = [
-        sd for sd in source_defs["sourceDefinitions"] if sd["name"] == "Postgres"
-    ]
+    source_defs = _safe_request(client, "/source_definitions/list_latest", data={"workspaceId": workspace_id})
+    postgres_definitions = [sd for sd in source_defs["sourceDefinitions"] if sd["name"] == "Postgres"]
     if not postgres_definitions:
         raise check.CheckError("Expected at least one Postgres source definition.")
     source_definition_id = postgres_definitions[0]["sourceDefinitionId"]
@@ -61,17 +53,11 @@ def _create_ab_source(client: AirbyteResource) -> str:
 
 
 def _create_ab_destination(client: AirbyteResource) -> str:
-    workspace_id = _safe_request(client, "/workspaces/list", data={})["workspaces"][0][
-        "workspaceId"
-    ]
+    workspace_id = _safe_request(client, "/workspaces/list", data={})["workspaces"][0]["workspaceId"]
 
     # get the latest available Postgres destination definition
-    destination_defs = _safe_request(
-        client, "/destination_definitions/list_latest", data={"workspaceId": workspace_id}
-    )
-    postgres_definitions = [
-        dd for dd in destination_defs["destinationDefinitions"] if dd["name"] == "Postgres"
-    ]
+    destination_defs = _safe_request(client, "/destination_definitions/list_latest", data={"workspaceId": workspace_id})
+    postgres_definitions = [dd for dd in destination_defs["destinationDefinitions"] if dd["name"] == "Postgres"]
     if not postgres_definitions:
         raise check.CheckError("Expected at least one Postgres destination definition.")
     destination_definition_id = postgres_definitions[0]["destinationDefinitionId"]
@@ -92,13 +78,11 @@ def _create_ab_destination(client: AirbyteResource) -> str:
 
 
 def setup_airbyte():
-    client = AirbyteResource(host="localhost", port="8000", use_https=False)
+    client = AirbyteResource(host="localhost", port="8000", use_https=False, request_timeout=50)
     source_id = _create_ab_source(client)
     destination_id = _create_ab_destination(client)
 
-    source_catalog = _safe_request(
-        client, "/sources/discover_schema", data={"sourceId": source_id}
-    )["catalog"]
+    source_catalog = _safe_request(client, "/sources/discover_schema", data={"sourceId": source_id})["catalog"]
 
     # create a connection between the new source and destination
     connection_id = _safe_request(
@@ -131,9 +115,7 @@ def _random_dates():
     clipped_flipped_dist = clipped_flipped_dist[:-1]
 
     if len(clipped_flipped_dist) < N_ORDERS:
-        clipped_flipped_dist = np.append(
-            clipped_flipped_dist, clipped_flipped_dist[: N_ORDERS - len(clipped_flipped_dist)]
-        )
+        clipped_flipped_dist = np.append(clipped_flipped_dist, clipped_flipped_dist[: N_ORDERS - len(clipped_flipped_dist)])
 
     return pd.to_datetime((clipped_flipped_dist * (end_u - start_u)) + start_u, unit="s")
 

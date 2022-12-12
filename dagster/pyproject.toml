@@ -19,6 +19,7 @@ dbt-core = "1.2.0"
 dbt-postgres = "*"
 beautifulsoup4 = "*"
 requests = "*"
+aiohttp = "*"
 
 [tool.poetry.dev-dependencies]
 black = "^22.6.0"
