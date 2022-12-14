@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "orchestration-layer"
+name = "orchestration"
 version = "0.1.0"
 description = ""
 authors = ["Simon Späti <simon@airbyte.io>"]
@@ -9,16 +9,15 @@ authors = ["Simon Späti <simon@airbyte.io>"]
 python = "^3.9"
 dagster = "^1.1.0"
 dagit = "^1.1.0"
-dagster-airbyte = "*"
-dagster-managed-elements = "*"
-dagster-dbt = "*"
-dagster-postgres = "*"
-pandas = "*"
-numpy = "*"
+dagster-airbyte = ">=0.0.0"
+dagster-managed-elements = ">=0.0.0"
+dagster-dbt = ">=0.0.0"
+dagster-postgres = ">=0.0.0"
+pandas = ">=0.0.0"
 dbt-core = "1.2.0"
-dbt-postgres = "*"
-beautifulsoup4 = "*"
-requests = "*"
+dbt-postgres = "1.2.0"
+beautifulsoup4 = ">=0.0.0"
+requests = ">=0.0.0"
 aiohttp = "*"
 
 [tool.poetry.dev-dependencies]

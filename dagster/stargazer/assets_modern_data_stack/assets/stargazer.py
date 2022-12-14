@@ -93,8 +93,7 @@ gh_awesome_de_list_source = GithubSource(
     name="gh_awesome_de_list",
     credentials=GithubSource.PATCredentials(TOKEN),
     start_date="2020-01-01T00:00:00Z",
-    # repository=get_awesome_repo_list(),  # "prometheus/haproxy_exporter",
-    repository="prometheus/haproxy_exporter",
+    repository=get_awesome_repo_list(),  # "prometheus/haproxy_exporter",
     page_size_for_large_streams=100,
 )
 
