@@ -11,6 +11,6 @@ start dagster UI with
 ```sh
 dagit
 ````
-*or `task run`*
+
 
 

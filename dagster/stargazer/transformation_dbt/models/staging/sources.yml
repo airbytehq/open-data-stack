@@ -1,0 +1,11 @@
+version: 2
+sources:
+- name: postgres
+  database: postgres
+  schema: public
+  tables:
+    - name: stargazers
+      identifier: _airbyte_raw_stargazers
+      description: Given stars on GitHub repositories
+    - name: stargazers_user
+      description: GitHub users that started the GitHub repo

@@ -1,8 +1,16 @@
-from dagster import asset, op, with_resources
-from dagster_airbyte import load_assets_from_airbyte_project, AirbyteManagedElementReconciler, airbyte_resource, AirbyteConnection, AirbyteSyncMode
+from dagster import asset
+from dagster_airbyte import (
+    AirbyteManagedElementReconciler,
+    airbyte_resource,
+    AirbyteConnection,
+    AirbyteSyncMode,
+    load_assets_from_connections,
+)
 from dagster_airbyte.managed.generated.sources import GithubSource
 from dagster_airbyte.managed.generated.destinations import LocalJsonDestination, PostgresDestination
-from typing import List, Mapping, Union
+from typing import List
+from dagster_dbt import load_assets_from_dbt_project
+
 
 from bs4 import BeautifulSoup
 import os
@@ -10,7 +18,7 @@ import requests
 
 import asyncio
 import aiohttp
-from ..utils.constants import AIRBYTE_CONNECTION_ID, DBT_PROJECT_DIR
+from ..utils.constants import DBT_PROJECT_DIR
 
 
 TOKEN = os.environ.get("AIRBYTE_PERSONAL_GITHUB_TOKEN", "please-set-your-token")
@@ -26,7 +34,7 @@ airbyte_instance = airbyte_resource.configured(
         "request_timeout": 60,
     }
 )
-
+# two other possibilities to initialize the airbyte instance
 # airbyte_assets = load_assets_from_airbyte_project(
 #     project_dir="../../../../airbyte/test",
 # )
@@ -85,8 +93,8 @@ gh_awesome_de_list_source = GithubSource(
     name="gh_awesome_de_list",
     credentials=GithubSource.PATCredentials(TOKEN),
     start_date="2020-01-01T00:00:00Z",
-    repository=get_awesome_repo_list(),  # "prometheus/haproxy_exporter",
-    # repository="sindresorhus/awesome rqlite/rqlite pingcap/tidb pinterest/mysql_utils rescrv/HyperDex iondbproject/iondb filodb/FiloDB rain1017/memdb twitter-archive/flockdb gchq/Gaffer influxdata/influxdb OpenTSDB/opentsdb kairosdb/kairosdb spotify/heroic akumuli/Akumuli dalmatinerdb/dalmatinerdb rackerlabs/blueflood NationalSecurityAgency/timely tarantool/tarantool greenplum-db/gpdb cayleygraph/cayley confluentinc/bottledwater-pg airbnb/kafkat xstevens/pg_kafka edenhill/librdkafka wurstmeister/kafka-docker SOHU-Co/kafka-node pinterest/secor uber/kafka-logger mozilla-services/heka spotify/snakebite RaRe-Technologies/smart_open tuplejump/snackfs-release s3ql/s3ql google/snappy protocolbuffers/protobuf EsotericSoftware/kryo pipelinedb/pipelinedb faust-streaming/faust hstreamdb/hstream Stratio/deep-spark asavinov/bistro apache/incubator-hivemall dropbox/PyHive stitchfix/pyxley plotly/dash metabase/metabase spotify/luigi apache/airflow pinterest/pinball dagster-io/dagster treeverse/lakeFS pblittle/docker-logstash jprante/elasticsearch-jdbc zombodb/zombodb redbooth/gockerize weaveworks/weave CenturyLinkLabs/zodiac google/cadvisor figadore/micro-s3-persistence grammarly/rocker-compose hashicorp/nomad Interana/eventsim prometheus/prometheus prometheus/haproxy_exporter",
+    # repository=get_awesome_repo_list(),  # "prometheus/haproxy_exporter",
+    repository="prometheus/haproxy_exporter",
     page_size_for_large_streams=100,
 )
 
@@ -119,10 +127,17 @@ airbyte_reconciler = AirbyteManagedElementReconciler(
     connections=[stargazer_connection],
 )
 
-# dumym that `dagster-me` with new pythonic airbyte configs works
-@asset
-def dummy() -> str:
-    return "test"
+
+# load airbyte connection from above pythonic definitions
+airbyte_assets = load_assets_from_connections(airbyte=airbyte_instance, connections=[stargazer_connection], key_prefix=["postgres"])
+
+# preparing assets bassed on existing dbt project
+dbt_assets = load_assets_from_dbt_project(project_dir=DBT_PROJECT_DIR, io_manager_key="db_io_manager", key_prefix="postgres")
 
 
-# dbt_assets = load_assets_from_dbt_project(project_dir=DBT_PROJECT_DIR, io_manager_key="db_io_manager")
+# @asset(
+#     description="The metabase dashboard where the stargazers are visualized",
+#     metadata={"dashboard_url": "http://localhost:3000/dashboard/1-airbyte-sync-status"},
+# )
+# def metabase_dashboard(mart_gh_cumulative):
+#     return "test"

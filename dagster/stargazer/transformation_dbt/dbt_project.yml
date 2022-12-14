@@ -1,0 +1,53 @@
+name: 'stargazers'
+version: '1.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project. Profiles contain
+# database connection information, and should be configured in the  ~/.dbt/profiles.yml file
+profile: 'stargazers'
+
+# These configurations specify where dbt should look for different types of files.
+# The `source-paths` config, for example, states that source models can be found
+docs-paths: ["docs"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+seed-paths: ["seed"]
+macro-paths: ["macros"]
+
+target-path: "target"   # directory which will store compiled SQL files
+log-path: "logs"        # directory which will store DBT logs
+
+clean-targets:          # directories to be removed by `dbt clean`
+    - "target"
+    - "logs"
+
+quoting:
+  database: true
+  schema: true
+  identifier: true
+
+dispatch:
+  - macro_namespace: dbt_utils
+    search_order: ['airbyte_warehouse', 'dbt_utils']
+
+vars:
+  'dbt_date:time_zone': 'America/Los_Angeles'
+  get_max_dt_lookback_window: 4 # Set how many days to look back when computing max dt for incremental
+
+# Using these configurations, you can enable or disable models, change how they
+# are materialized, and more!
+models:
+  stargazers:
+    # When schema changes on models we are building, we should run dbt with --full-refresh flag explicitely
+    +on_schema_change: "fail"
+    +materialized: view
+    staging:
+      +tags: staging
+      +materialized: view
+      +schema: staging
+    core:
+      +materialized: view
+      +schema: core
+    mart:
+      +materialized: view
+      +schema: mart

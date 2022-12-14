@@ -1,0 +1,9 @@
+# add dependencies. these will get pulled during the `dbt deps` process.
+
+packages:
+  - package: calogica/dbt_expectations
+    version: [">=0.5.0", "<0.6.0"]
+  - package: dbt-labs/codegen
+    version: 0.7.0
+  - package: dbt-labs/dbt_external_tables
+    version: 0.8.0
