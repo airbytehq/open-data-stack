@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: mart_gh_cumulative
+    description: cumulative count of stars
+    columns:
+      - name: repository
+      - name: starred_at_month
+      - name: sum_starscustomer_id
+      - name: cumulative_stargazers
+
+  - name: mart_gh_stargazer
+    description: This model cleans up customer data
+    columns:
+      - name: repository 
+      - name: starred_at
+      - name: user_login
