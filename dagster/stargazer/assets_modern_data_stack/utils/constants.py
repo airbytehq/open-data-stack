@@ -1,12 +1,5 @@
 from dagster_postgres.utils import get_conn_string
-
 from dagster._utils import file_relative_path
-
-# =========================================================================
-# To get this value, run `python -m assets_modern_data_stack.setup_airbyte`
-# and grab the connection id that it prints at the end
-# AIRBYTE_CONNECTION_ID = "ef27891b-b8e5-47b6-8601-c01b29f9cb80"
-# =========================================================================
 
 
 # AIRBYTE_CONFIG = {"host": "localhost", "port": "8000"}

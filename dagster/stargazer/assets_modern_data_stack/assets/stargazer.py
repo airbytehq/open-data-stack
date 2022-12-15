@@ -7,7 +7,10 @@ from dagster_airbyte import (
     load_assets_from_connections,
 )
 from dagster_airbyte.managed.generated.sources import GithubSource
-from dagster_airbyte.managed.generated.destinations import LocalJsonDestination, PostgresDestination
+from dagster_airbyte.managed.generated.destinations import (
+    LocalJsonDestination,
+    PostgresDestination,
+)
 from typing import List
 from dagster_dbt import load_assets_from_dbt_project
 
@@ -21,7 +24,9 @@ import aiohttp
 from ..utils.constants import DBT_PROJECT_DIR
 
 
-TOKEN = os.environ.get("AIRBYTE_PERSONAL_GITHUB_TOKEN", "please-set-your-token")
+AIRBYTE_PERSONAL_GITHUB_TOKEN = os.environ.get(
+    "AIRBYTE_PERSONAL_GITHUB_TOKEN", "please-set-your-token"
+)
 POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD", "please-set-your-token")
 
 
@@ -31,7 +36,6 @@ airbyte_instance = airbyte_resource.configured(
         "port": "8000",
         "username": "airbyte",
         "password": {"env": "AIRBYTE_PASSWORD"},
-        "request_timeout": 60,
     }
 )
 # two other possibilities to initialize the airbyte instance
@@ -74,9 +78,17 @@ def get_awesome_repo_list() -> str:
     html = requests.get(url)
     soup = BeautifulSoup(html.text, "html.parser")
     # parse all links into a list starting with github.com
-    links = [link.get("href") for link in soup.find_all("a") if link.get("href").startswith("https://github.com")]
+    links = [
+        link.get("href")
+        for link in soup.find_all("a")
+        if link.get("href").startswith("https://github.com")
+    ]
     # remove links that start with url
-    links = [link for link in links if not link.startswith(url) and not link.endswith("github.com")]
+    links = [
+        link
+        for link in links
+        if not link.startswith(url) and not link.endswith("github.com")
+    ]
     # remove last slash if there
     links = [link[:-1] if link.endswith("/") else link for link in links]
     # remove repos without organization
@@ -85,13 +97,17 @@ def get_awesome_repo_list() -> str:
     existings_links = asyncio.run(check_websites_exists(links))
     # remove `https://github.com/` from links
     links = [link.replace("https://github.com/", "") for link in existings_links]
+
+    # due to timeout limits while airbyte is checking each repo, I limited it here to make this demo work for you
+    links = links[0:10]
+
     # return links as a string with blank space as separator
     return " ".join(links)
 
 
 gh_awesome_de_list_source = GithubSource(
     name="gh_awesome_de_list",
-    credentials=GithubSource.PATCredentials(TOKEN),
+    credentials=GithubSource.PATCredentials(AIRBYTE_PERSONAL_GITHUB_TOKEN),
     start_date="2020-01-01T00:00:00Z",
     repository=get_awesome_repo_list(),  # "prometheus/haproxy_exporter",
     page_size_for_large_streams=100,
@@ -108,12 +124,6 @@ postgres_destination = PostgresDestination(
     ssl_mode=PostgresDestination.Disable(),
 )
 
-
-local_json_destination = LocalJsonDestination(
-    name="local-json",
-    destination_path="/local/cereals_out.json",
-)
-
 stargazer_connection = AirbyteConnection(
     name="fetch_stargazer",
     source=gh_awesome_de_list_source,
@@ -121,17 +131,23 @@ stargazer_connection = AirbyteConnection(
     stream_config={"stargazers": AirbyteSyncMode.incremental_append_dedup()},
     normalize_data=True,
 )
+
 airbyte_reconciler = AirbyteManagedElementReconciler(
     airbyte=airbyte_instance,
     connections=[stargazer_connection],
 )
 
-
 # load airbyte connection from above pythonic definitions
-airbyte_assets = load_assets_from_connections(airbyte=airbyte_instance, connections=[stargazer_connection], key_prefix=["postgres"])
+airbyte_assets = load_assets_from_connections(
+    airbyte=airbyte_instance,
+    connections=[stargazer_connection],
+    key_prefix=["postgres"],
+)
 
 # preparing assets bassed on existing dbt project
-dbt_assets = load_assets_from_dbt_project(project_dir=DBT_PROJECT_DIR, io_manager_key="db_io_manager", key_prefix="postgres")
+dbt_assets = load_assets_from_dbt_project(
+    project_dir=DBT_PROJECT_DIR, io_manager_key="db_io_manager", key_prefix="postgres"
+)
 
 
 # @asset(
