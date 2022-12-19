@@ -1,6 +1,8 @@
 
 # Dagster Orchestration Layer
 
+This use case is documented step by step on [Configure Airbyte Connections with Python (Dagster)](https://airbyte.com/tutorials/configure-airbyte-with-python-dagster). Below is a summary on how to get started quickly.
+
 ## Getting started
 setup virtual env, dependencies:
 ```bash
@@ -58,10 +60,10 @@ You can click "materialize" inside dagit to sync airbyte connections and run dbt
 
 ## Start the BI Dashbaord with Meltano
 
-Start it in a seperate shell and follow the docs [Metabase Readme](../../visualization/metabase/readme.md).
+Start it in a separate shell and follow the docs [Metabase Readme](../../visualization/metabase/readme.md).
 
 
-See a step by step guide on [Airbyte Blog](https://airbyte.com/blog/).
+See a step-by-step guide on [Airbyte Blog](https://airbyte.com/tutorials/configure-airbyte-with-python-dagster).
 
 
 
