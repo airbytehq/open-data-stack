@@ -18,6 +18,7 @@ setup(
         "aiohttp",
         "requests",
         "beautifulsoup4",
+        "dbt-duckdb",
     ],
     extras_require={"dev": ["dagit", "pytest", "black"]},
 )
