@@ -6,10 +6,11 @@ from dagster_airbyte import (
     AirbyteSyncMode,
     load_assets_from_connections,
 )
-from dagster_airbyte.managed.generated.sources import GithubSource
+from dagster_airbyte.managed.generated.sources import FakerSource, GithubSource
 from dagster_airbyte.managed.generated.destinations import (
     LocalJsonDestination,
     PostgresDestination,
+    DuckdbDestination,
 )
 from typing import List
 from dagster_dbt import load_assets_from_dbt_project
@@ -21,6 +22,7 @@ import requests
 
 import asyncio
 import aiohttp
+from sqlalchemy import schema
 from ..utils.constants import DBT_PROJECT_DIR
 
 
@@ -99,37 +101,65 @@ def get_awesome_repo_list() -> str:
     links = [link.replace("https://github.com/", "") for link in existings_links]
 
     # due to timeout limits while airbyte is checking each repo, I limited it here to make this demo work for you
-    links = links[0:10]
+    links = links[0:2]
 
     # return links as a string with blank space as separator
     return " ".join(links)
 
 
+# test_data = FakerSource(name="test_data", count=100)
+
 gh_awesome_de_list_source = GithubSource(
     name="gh_awesome_de_list",
     credentials=GithubSource.PATCredentials(AIRBYTE_PERSONAL_GITHUB_TOKEN),
     start_date="2020-01-01T00:00:00Z",
-    repository=get_awesome_repo_list(),  # "prometheus/haproxy_exporter",
+    # repository=get_awesome_repo_list(),  # "prometheus/haproxy_exporter",
+    repository="prometheus/haproxy_exporter",
     page_size_for_large_streams=100,
 )
 
-postgres_destination = PostgresDestination(
-    name="postgres",
-    host="localhost",
-    port=5432,
-    database="postgres",
-    schema="public",
-    username="postgres",
-    password=POSTGRES_PASSWORD,
-    ssl_mode=PostgresDestination.Disable(),
+# postgres_destination = PostgresDestination(
+#     name="postgres",
+#     host="localhost",
+#     port=5432,
+#     database="postgres",
+#     schema="public",
+#     username="postgres",
+#     password=POSTGRES_PASSWORD,
+#     ssl_mode=PostgresDestination.Disable(),
+# )
+
+duckdb_destination = DuckdbDestination(
+    name="duckdb",
+    path="/local/ods/stage.db",
 )
 
+# stargazer_connection = AirbyteConnection(
+#     name="fetch_stargazer",
+#     source=gh_awesome_de_list_source,
+#     destination=postgres_destination,
+#     stream_config={"stargazers": AirbyteSyncMode.incremental_append()},
+#     normalize_data=False,
+# )
+
+
+# test_connection = AirbyteConnection(
+#     name="fetch_test_data_duckdb",
+#     source=test_data,
+#     destination=duckdb_destination,
+#     stream_config={
+#         "_airbyte_raw_users": AirbyteSyncMode.full_refresh_overwrite(),
+#         "_airbyte_raw_products": AirbyteSyncMode.full_refresh_overwrite(),
+#     },
+#     normalize_data=False,  # True,
+# )
+
 stargazer_connection = AirbyteConnection(
-    name="fetch_stargazer",
+    name="fetch_stargazer_duckdb",
     source=gh_awesome_de_list_source,
-    destination=postgres_destination,
-    stream_config={"stargazers": AirbyteSyncMode.incremental_append_dedup()},
-    normalize_data=True,
+    destination=duckdb_destination,
+    stream_config={"stargazers": AirbyteSyncMode.incremental_append()},
+    normalize_data=False,  # True,
 )
 
 airbyte_reconciler = AirbyteManagedElementReconciler(

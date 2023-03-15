@@ -18,7 +18,8 @@ setup(
         "aiohttp",
         "requests",
         "beautifulsoup4",
-        "dbt-duckdb",
+        "dbt-duckdb==1.4.0",
+        "duckdb==0.7.0",  # this must be aligned with the `destination-duckdb` version of airbyte, otherwise stage.db can't be opened!
     ],
     extras_require={"dev": ["dagit", "pytest", "black"]},
 )
