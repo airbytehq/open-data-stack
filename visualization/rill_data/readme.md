@@ -2,6 +2,18 @@
 
 [Rill Data](https://www.rilldata.com/) one of the latest BI tools and based on DuckDB. It's fully interactive and using DuckDB as a caching layer.
 
+
+## Open Data Stack in a Box
+
+Starting rill with the project from this repo but the database where we loaded airbyte sources into it:
+```sh
+rill start --db /tmp/airbyte_local/ods/stage.db --project .
+```
+
+✍ Note: Make sure the the location matches the settings in `stargazer.py` in the dagster project - defaults settings will work
+
+
+## [Airbyte Monitoring](https://airbyte.com/blog/airbyte-monitoring-with-dbt-and-metabase)
 Unfortunately the data cannot be read live from airbyte postgres, but you can copy the data with a simple comand as CSV and read these with Rill. The commands below show you how you could create a snapshot and vizualize these data.
 
 
