@@ -7,6 +7,7 @@ This use case is documented step by step on [Configure Airbyte Connections with 
 setup virtual env, dependencies:
 ```bash
 cd stargazer
+python3 -m pip install --upgrade pip #otherwise might have problem with duckdb/dagster
 pip install -e ".[dev]"
 ```
 

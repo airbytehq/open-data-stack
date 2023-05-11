@@ -2,11 +2,14 @@ stargazers:
   target: dev
   outputs:
     dev:
-      type: postgres
-      threads: 1
-      host: localhost
-      port: 5432
-      user: postgres
-      pass: password
-      dbname: postgres
-      schema: public
+      # type: postgres
+      # threads: 1
+      # host: localhost
+      # port: 5432
+      # user: postgres
+      # pass: password
+      # dbname: postgres
+      # schema: public
+      type: duckdb
+      path: /tmp/airbyte_local/ods/stage.db
+      schema: main

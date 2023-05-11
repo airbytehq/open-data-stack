@@ -16,12 +16,13 @@ from .assets.stargazer import airbyte_assets, dbt_assets  # , metabase_dashboard
 def assets_modern_data_stack():
     return [
         airbyte_assets,
-        with_resources(
-            dbt_assets,  # load_assets_from_package_module(assets),
-            resource_defs={
-                "dbt": dbt_cli_resource.configured(DBT_CONFIG),
-                "db_io_manager": db_io_manager.configured(POSTGRES_CONFIG),
-            },
-        ),
+        ## Disable for now as we use DuckDB and Rill for tranformations
+        # with_resources(
+        #     dbt_assets,
+        #     resource_defs={
+        #         "dbt": dbt_cli_resource.configured(DBT_CONFIG),
+        #         "db_io_manager": db_io_manager.configured(POSTGRES_CONFIG),
+        #     },
+        # ),
         # metabase_dashboard,
     ]
