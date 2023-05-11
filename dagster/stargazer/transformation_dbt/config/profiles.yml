@@ -11,5 +11,5 @@ stargazers:
       # dbname: postgres
       # schema: public
       type: duckdb
-      path: /tmp/airbyte_local/opendatastack-in-a-box.duckdb 
+      path: /tmp/airbyte_local/ods/stage.db
       schema: main

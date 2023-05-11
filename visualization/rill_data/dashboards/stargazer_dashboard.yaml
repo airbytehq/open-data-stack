@@ -1,0 +1,13 @@
+# Visit https://docs.rilldata.com/references/project-files to learn more about Rill project files.
+
+display_name: "stargazer_dashboard"
+model: "stargazer"
+default_time_range: ""
+smallest_time_grain: ""
+timeseries: "starred_at"
+measures:
+  - label: Total records
+    expression: count(*)
+    description: Total number of records present
+    format_preset: humanize
+dimensions: []

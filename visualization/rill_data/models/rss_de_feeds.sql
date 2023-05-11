@@ -1,0 +1,1 @@
+SELECT count(_airbyte_data.title) FROM read_json_auto('/tmp/airbyte_local/ods/json_export/*/*.jsonl')
